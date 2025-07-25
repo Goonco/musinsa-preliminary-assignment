@@ -1,9 +1,10 @@
 "use client";
 
+import { Input } from "@headlessui/react";
 import { usePathname, useRouter } from "next/navigation";
-import { CategoryList } from "./component/category-list";
+import { CategoryList, RecruitOverviewList } from "./component";
 
-const CATEGORY = ["구분", "직군", "근무지"] as const;
+export const CATEGORY = ["구분", "직군", "근무지"] as const;
 export type Category = (typeof CATEGORY)[number];
 
 export default function Page() {
@@ -20,13 +21,19 @@ export default function Page() {
 				<h1>TEAM MUSINSA</h1>
 				<h2>Careers</h2>
 			</div>
-			<div>
-				{CATEGORY.map((category) => (
-					<CategoryList key={category} category={category} />
-				))}
-				<button onClick={clearParams} type="button">
-					필터 초기화
-				</button>
+			<div className="flex flex-row w-full border">
+				<div>
+					{CATEGORY.map((category) => (
+						<CategoryList key={category} category={category} />
+					))}
+					<button onClick={clearParams} type="button">
+						필터 초기화
+					</button>
+				</div>
+				<div className="bg-red-50 flex-1">
+					<Input className="outline w-full" />
+					<RecruitOverviewList />
+				</div>
 			</div>
 		</div>
 	);

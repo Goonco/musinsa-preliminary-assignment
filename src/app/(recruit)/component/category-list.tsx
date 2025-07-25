@@ -44,7 +44,7 @@ const DATAS: data[] = [
 	},
 ];
 
-const categoryEngName: Record<Category, string> = {
+export const categoryEngName: Record<Category, string> = {
 	구분: "subsidaries",
 	근무지: "place",
 	직군: "occupations",
