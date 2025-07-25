@@ -54,12 +54,19 @@ export function RecruitOverviewList() {
 	const searchParams = useSearchParams();
 
 	function checkOverview(overview: Recruit_Overview) {
-		return CATEGORY.every((category) => {
-			const items = searchParams.getAll(categoryEngName[category]);
+		let flag = true;
+		const i2 = searchParams.get("query");
+		if (i2) flag = overview.title.includes(i2);
 
-			if (items.length === 0) return true;
-			return items.some((item) => overview[category] === item);
-		});
+		return (
+			flag &&
+			CATEGORY.every((category) => {
+				const items = searchParams.getAll(categoryEngName[category]);
+
+				if (items.length === 0) return true;
+				return items.some((item) => overview[category] === item);
+			})
+		);
 	}
 
 	const filteredOverviewList = RECRUIT_OVERVEIWS.filter((overview) =>
