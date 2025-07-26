@@ -1,7 +1,10 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-import { CATEGORY, type Category } from "../page";
+import { Input } from "@headlessui/react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { CATEGORY, type Category } from "@/utils/types";
 import { categoryEngName } from "./category-list";
 
 type Recruit_Overview = { title: string } & { [K in Category]: string };
@@ -51,7 +54,9 @@ const RECRUIT_OVERVEIWS: Recruit_Overview[] = [
 ];
 
 export function RecruitOverviewList() {
+	const router = useRouter();
 	const searchParams = useSearchParams();
+	const pathname = usePathname();
 
 	function checkOverview(overview: Recruit_Overview) {
 		let flag = true;
@@ -73,18 +78,34 @@ export function RecruitOverviewList() {
 		checkOverview(overview),
 	);
 
+	const handleSearch = useDebouncedCallback((term: string) => {
+		const params = new URLSearchParams(searchParams);
+		if (term) {
+			params.set("query", term);
+		} else {
+			params.delete("query");
+		}
+		router.replace(`${pathname}?${params.toString()}`);
+	}, 300);
+
 	return (
-		<div className="space-y-4">
-			{filteredOverviewList.length !== 0 ? (
-				filteredOverviewList.map((overview) => (
-					<div key={overview.title}>
-						<p>{overview.title}</p>
-						<p>{`${overview.구분} | ${overview.근무지} | ${overview.직군}`}</p>
-					</div>
-				))
-			) : (
-				<p>일치하는 결과가 없습니다.</p>
-			)}
-		</div>
+		<Suspense>
+			<Input
+				className="outline w-full"
+				onChange={(e) => handleSearch(e.target.value)}
+			/>
+			<div className="space-y-4">
+				{filteredOverviewList.length !== 0 ? (
+					filteredOverviewList.map((overview) => (
+						<div key={overview.title}>
+							<p>{overview.title}</p>
+							<p>{`${overview.구분} | ${overview.근무지} | ${overview.직군}`}</p>
+						</div>
+					))
+				) : (
+					<p>일치하는 결과가 없습니다.</p>
+				)}
+			</div>
+		</Suspense>
 	);
 }

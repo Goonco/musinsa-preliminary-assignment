@@ -2,8 +2,8 @@
 
 import { Checkbox, Field, Label } from "@headlessui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import type { Category } from "../page";
+import { Suspense, useState } from "react";
+import type { Category } from "@/utils/types";
 
 type data = {
 	category: Category;
@@ -90,31 +90,33 @@ export function CategoryList({ category }: { category: Category }) {
 	};
 
 	return (
-		<div>
-			<p className="text-lg">{category}</p>
-			<button type="button" onClick={() => setDisplay((prev) => !prev)}>
-				on/off
-			</button>
-			{display &&
-				items.map((item) => {
-					const isClicked = searchParams
-						.getAll(categoryEngName[category])
-						.includes(item.item);
+		<Suspense>
+			<div>
+				<p className="text-lg">{category}</p>
+				<button type="button" onClick={() => setDisplay((prev) => !prev)}>
+					on/off
+				</button>
+				{display &&
+					items.map((item) => {
+						const isClicked = searchParams
+							.getAll(categoryEngName[category])
+							.includes(item.item);
 
-					return (
-						<div key={item.item}>
-							<Field className="flex flex-row text-sm">
-								<Checkbox
-									checked={isClicked}
-									onChange={() => handleCheckClick(item.item, isClicked)}
-									className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
-								/>
+						return (
+							<div key={item.item}>
+								<Field className="flex flex-row text-sm">
+									<Checkbox
+										checked={isClicked}
+										onChange={() => handleCheckClick(item.item, isClicked)}
+										className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
+									/>
 
-								<Label>{item.item}</Label>
-							</Field>
-						</div>
-					);
-				})}
-		</div>
+									<Label>{item.item}</Label>
+								</Field>
+							</div>
+						);
+					})}
+			</div>
+		</Suspense>
 	);
 }
