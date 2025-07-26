@@ -66,6 +66,29 @@ export function CategoryList({ category }: { category: Category }) {
 		return params.toString();
 	};
 
+	const removeQueryString = (name: string, value: string) => {
+		const newParams = new URLSearchParams();
+		for (const [k, v] of searchParams.entries()) {
+			if (!(k === name && v === value)) {
+				newParams.append(k, v);
+			}
+		}
+
+		return newParams.toString();
+	};
+
+	const handleCheckClick = (val: string, isClicked: boolean) => {
+		if (!isClicked) {
+			router.push(
+				`${pathname}?${createQueryString(categoryEngName[category], val)}`,
+			);
+		} else {
+			router.push(
+				`${pathname}?${removeQueryString(categoryEngName[category], val)}`,
+			);
+		}
+	};
+
 	return (
 		<div>
 			<p className="text-lg">{category}</p>
@@ -83,13 +106,7 @@ export function CategoryList({ category }: { category: Category }) {
 							<Field className="flex flex-row text-sm">
 								<Checkbox
 									checked={isClicked}
-									onChange={() =>
-										router.push(
-											pathname +
-												"?" +
-												createQueryString(categoryEngName[category], item.item),
-										)
-									}
+									onChange={() => handleCheckClick(item.item, isClicked)}
 									className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
 								/>
 
