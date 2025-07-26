@@ -7,10 +7,13 @@ export type Filter = {
 	category: Category;
 };
 
-export type FilterKey = "subsidaries" | "place" | "occupations" | "query";
-
-// export const : Record<Category, FilterKey> = {
-// 	구분: "subsidaries",
-// 	근무지: "place",
-// 	직군: "occupations",
-// };
+export const FILTER_KEY = [
+	"subsidaries",
+	"place",
+	"occupations",
+	"title",
+] as const;
+export type FilterKey = (typeof FILTER_KEY)[number];
+export type RecruitOverview = { id: number } & {
+	[K in FilterKey]: string;
+};

@@ -1,19 +1,18 @@
 import postgres from "postgres";
-import { filters } from "@/lib/placehodler-datas";
+import { filters, recruitments } from "@/lib/placehodler-datas";
 
 // biome-ignore lint: env var assertion
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 async function seedFilters() {
-	await sql`DROP TABLE IF EXISTS filters`;
 	await sql`
-    CREATE TABLE filters (
+    CREATE TABLE IF NOT EXISTS filters (
       id SERIAL PRIMARY KEY,
       category VARCHAR(255) NOT NULL,
       name VARCHAR(255) NOT NULL,
       UNIQUE (category, name)
     );
-  `;
+  	`;
 
 	const insertedFilters = await Promise.all(
 		filters.map(async (filter) => {
@@ -26,6 +25,31 @@ async function seedFilters() {
 	);
 
 	return insertedFilters;
+}
+
+async function seedRecruitments() {
+	await sql`
+	CREATE TABLE IF NOT EXISTS recruitments (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+	  subsidaries VARCHAR(255) NOT NULL,
+	  occupations VARCHAR(255) NOT NULL,
+	  place VARCHAR(255) NOT NULL,
+      UNIQUE (title, subsidaries, occupations, place)
+    );
+	`;
+
+	const insertedRecruitments = await Promise.all(
+		recruitments.map(async (recruitment) => {
+			return sql`
+	        INSERT INTO recruitments (title, subsidaries, occupations, place)
+	        VALUES (${recruitment.title}, ${recruitment.subsidaries}, ${recruitment.occupations}, ${recruitment.place})
+	        ON CONFLICT (title, subsidaries, occupations, place) DO NOTHING;
+	      `;
+		}),
+	);
+
+	return insertedRecruitments;
 }
 
 // async function seedUsers() {
@@ -130,7 +154,10 @@ export async function GET() {
 		message: "Database seeded successfully",
 	});
 	try {
-		const result = await sql.begin((sql) => [seedFilters()]);
+		const result = await sql.begin((sql) => [
+			seedFilters(),
+			seedRecruitments(),
+		]);
 	} catch (error) {
 		res = Response.json({ error }, { status: 500 });
 	} finally {

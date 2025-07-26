@@ -1,8 +1,9 @@
-import { fetchFilter } from "@/lib/api";
+import { fetchFilter, fetchRecruitmentOverview } from "@/lib/api";
 import { FilterSidebar, RecruitOverviewList } from "./_components";
 
 export default async function Page() {
 	const filters = await fetchFilter();
+	const recruitmentOverviews = await fetchRecruitmentOverview();
 
 	return (
 		<div className="text-2xl">
@@ -13,7 +14,7 @@ export default async function Page() {
 			<div className="flex flex-row w-full border">
 				<FilterSidebar filters={filters} />
 				<div className="bg-red-50 flex-1">
-					<RecruitOverviewList />
+					<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
 				</div>
 			</div>
 		</div>

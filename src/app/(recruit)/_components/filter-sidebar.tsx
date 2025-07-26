@@ -10,6 +10,12 @@ import {
 	type FilterKey,
 } from "@/lib/types";
 
+const categoryEngName: Record<Category, FilterKey> = {
+	구분: "subsidaries",
+	근무지: "place",
+	직군: "occupations",
+};
+
 export const FilterSidebar = ({ filters }: { filters: Filter[] }) => {
 	const { clearFilter } = useFilterParams();
 
@@ -31,12 +37,6 @@ export const FilterSidebar = ({ filters }: { filters: Filter[] }) => {
 			</button>
 		</div>
 	);
-};
-
-export const categoryEngName: Record<Category, FilterKey> = {
-	구분: "subsidaries",
-	근무지: "place",
-	직군: "occupations",
 };
 
 function FiltersPerCategory({
@@ -73,10 +73,7 @@ function FiltersPerCategory({
 									className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
 								/>
 
-								<Label>
-									{item.name}
-									{item.id}
-								</Label>
+								<Label>{item.name}</Label>
 							</Field>
 						</div>
 					);

@@ -1,4 +1,3 @@
 ToDo
 
-- [ ] 최적화
-- [ ] debounce
+- [ ] useCallback 최적화
