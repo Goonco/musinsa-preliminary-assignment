@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { CATEGORY, type Category } from "@/lib/types";
-import { categoryEngName } from "./category-list";
+import { categoryEngName } from "./filter-sidebar";
 
 type Recruit_Overview = { title: string } & { [K in Category]: string };
 const RECRUIT_OVERVEIWS: Recruit_Overview[] = [

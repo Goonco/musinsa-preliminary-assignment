@@ -5,21 +5,22 @@ import { filters } from "@/lib/placehodler-datas";
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 async function seedFilters() {
+	await sql`DROP TABLE IF EXISTS filters`;
 	await sql`
-    CREATE TABLE IF NOT EXISTS filters (
+    CREATE TABLE filters (
       id SERIAL PRIMARY KEY,
       category VARCHAR(255) NOT NULL,
-      item VARCHAR(255) NOT NULL,
-      UNIQUE (category, item)
+      name VARCHAR(255) NOT NULL,
+      UNIQUE (category, name)
     );
   `;
 
 	const insertedFilters = await Promise.all(
 		filters.map(async (filter) => {
 			return sql`
-	        INSERT INTO filters (category, item)
-	        VALUES (${filter.category}, ${filter.item})
-	        ON CONFLICT (id) DO NOTHING;
+	        INSERT INTO filters (category, name)
+	        VALUES (${filter.category}, ${filter.name})
+	        ON CONFLICT (category, name) DO NOTHING;
 	      `;
 		}),
 	);
@@ -125,11 +126,15 @@ async function seedFilters() {
 // }
 
 export async function GET() {
+	let res: Response = Response.json({
+		message: "Database seeded successfully",
+	});
 	try {
 		const result = await sql.begin((sql) => [seedFilters()]);
-
-		return Response.json({ message: "Database seeded successfully" });
 	} catch (error) {
-		return Response.json({ error }, { status: 500 });
+		res = Response.json({ error }, { status: 500 });
+	} finally {
+		await sql.end();
 	}
+	return res;
 }
