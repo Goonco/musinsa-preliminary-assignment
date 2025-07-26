@@ -75,12 +75,16 @@ export function RecruitOverviewList() {
 
 	return (
 		<div className="space-y-4">
-			{filteredOverviewList.map((overview) => (
-				<div key={overview.title}>
-					<p>{overview.title}</p>
-					<p>{`${overview.구분} | ${overview.근무지} | ${overview.직군}`}</p>
-				</div>
-			))}
+			{filteredOverviewList.length !== 0 ? (
+				filteredOverviewList.map((overview) => (
+					<div key={overview.title}>
+						<p>{overview.title}</p>
+						<p>{`${overview.구분} | ${overview.근무지} | ${overview.직군}`}</p>
+					</div>
+				))
+			) : (
+				<p>일치하는 결과가 없습니다.</p>
+			)}
 		</div>
 	);
 }
