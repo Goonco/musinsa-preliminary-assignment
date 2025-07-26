@@ -3,7 +3,7 @@
 import { Checkbox, Field, Label } from "@headlessui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import type { Category } from "@/utils/types";
+import type { Category } from "@/lib/types";
 
 type data = {
 	category: Category;

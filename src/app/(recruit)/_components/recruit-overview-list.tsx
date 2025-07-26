@@ -4,7 +4,7 @@ import { Input } from "@headlessui/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { CATEGORY, type Category } from "@/utils/types";
+import { CATEGORY, type Category } from "@/lib/types";
 import { categoryEngName } from "./category-list";
 
 type Recruit_Overview = { title: string } & { [K in Category]: string };

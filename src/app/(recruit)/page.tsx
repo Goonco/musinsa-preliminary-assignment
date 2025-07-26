@@ -1,17 +1,18 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation";
+// import { usePathname, useRouter } from "next/navigation";
 import { Suspense } from "react";
-import { CATEGORY } from "@/utils/types";
+import { fetchFilter } from "@/lib/api";
+import { CATEGORY } from "@/lib/types";
 import { CategoryList, RecruitOverviewList } from "./_components";
 
-export default function Page() {
-	const router = useRouter();
-	const pathname = usePathname();
+export default async function Page() {
+	const filter = await fetchFilter();
+	console.log("###", filter);
+	// const router = useRouter();
+	// const pathname = usePathname();
 
-	function clearParams() {
-		router.push(pathname);
-	}
+	// function clearParams() {
+	// 	router.push(pathname);
+	// }
 
 	return (
 		<Suspense>
@@ -25,9 +26,9 @@ export default function Page() {
 						{CATEGORY.map((category) => (
 							<CategoryList key={category} category={category} />
 						))}
-						<button onClick={clearParams} type="button">
+						{/* <button onClick={clearParams} type="button">
 							필터 초기화
-						</button>
+						</button> */}
 					</div>
 					<div className="bg-red-50 flex-1">
 						<RecruitOverviewList />
