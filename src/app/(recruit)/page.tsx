@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Wallpaper from "@/../public/musinsa-wallpaper.webp";
-import { fetchFilter, fetchRecruitmentOverview } from "@/lib/api";
+import { fetchAllRecruitmentOverviews, fetchFilter } from "@/lib/api";
 import { RecruitOverviewList } from "./_components";
 
 export default async function Page() {
 	const filters = await fetchFilter();
-	const recruitmentOverviews = await fetchRecruitmentOverview();
+	const recruitmentOverviews = await fetchAllRecruitmentOverviews();
 
 	return (
 		<div className="text-2xl">

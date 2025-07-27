@@ -11,7 +11,9 @@ export async function fetchFilter(): Promise<Filter[]> {
 	}
 }
 
-export async function fetchRecruitmentOverview(): Promise<RecruitOverview[]> {
+export async function fetchAllRecruitmentOverviews(): Promise<
+	RecruitOverview[]
+> {
 	try {
 		const data = await sql<
 			RecruitOverview[]
@@ -20,5 +22,22 @@ export async function fetchRecruitmentOverview(): Promise<RecruitOverview[]> {
 	} catch (error) {
 		console.error("Database Error:", error);
 		throw new Error("Failed to fetch filter data.");
+	}
+}
+
+export async function fetchRecruitmentTitleById(
+	id: number,
+): Promise<string | null> {
+	try {
+		const data = await sql<{ title: string }[]>`
+          SELECT title 
+          FROM recruitments 
+          WHERE id = ${id}
+        `;
+
+		return data.length > 0 ? data[0].title : null;
+	} catch (error) {
+		console.error("Database Error:", error);
+		throw new Error("Failed to fetch recruitment title.");
 	}
 }
