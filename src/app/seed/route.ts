@@ -1,8 +1,5 @@
-import postgres from "postgres";
 import { filters, recruitments } from "@/lib/placehodler-datas";
-
-// biome-ignore lint: env var assertion
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
+import sql from "@/lib/sql";
 
 async function seedFilters() {
 	await sql`
@@ -50,6 +47,22 @@ async function seedRecruitments() {
 	);
 
 	return insertedRecruitments;
+}
+
+async function seedApplicationForm() {
+	await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+	await sql`
+	CREATE TABLE IF NOT EXISTS application_forms (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      recruitment_id INTEGER NOT NULL,
+	  name VARCHAR(255) NOT NULL,
+	  email VARCHAR(255) NOT NULL,
+	  resume VARCHAR(2048) NOT NULL,
+	  inflow_path VARCHAR(255),
+      UNIQUE (name, email),
+      FOREIGN KEY (recruitment_id) REFERENCES recruitments(id)
+    );
+	`;
 }
 
 // async function seedUsers() {
@@ -157,6 +170,7 @@ export async function GET() {
 		const result = await sql.begin((sql) => [
 			seedFilters(),
 			seedRecruitments(),
+			seedApplicationForm(),
 		]);
 	} catch (error) {
 		res = Response.json({ error }, { status: 500 });

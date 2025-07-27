@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@headlessui/react";
+import Link from "next/link";
 import { useDebouncedCallback } from "use-debounce";
 import { useFilterParams } from "@/hooks";
 import { FILTER_KEY, type FilterKey, type RecruitOverview } from "@/lib/types";
@@ -40,8 +41,10 @@ export function RecruitOverviewList({
 							key={overview.id}
 						>
 							<p className="text-2xl font-bold hover:text-gray-400">
-								<span className="absolute inset-0" />
-								{overview.title}
+								<Link href={`/apply/${overview.id}`}>
+									<span className="absolute inset-0" />
+									{overview.title}
+								</Link>
 							</p>
 							<p className="text-sm text-gray-600">{`${overview.subsidaries} | ${overview.place} | ${overview.occupations}`}</p>
 						</div>

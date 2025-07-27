@@ -1,8 +1,5 @@
-import postgres from "postgres";
+import sql from "@/lib/sql";
 import type { Filter, RecruitOverview } from "./types";
-
-// biome-ignore lint: env var assertion
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 export async function fetchFilter(): Promise<Filter[]> {
 	try {
