@@ -1,5 +1,6 @@
 import sql from "@/lib/sql";
 import type {
+	ApplicantOverview,
 	Filter,
 	RecruitmentOverview,
 	RecruitmentOverviewAdmin,
@@ -11,7 +12,7 @@ export async function fetchFilter(): Promise<Filter[]> {
 		return data;
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch filter data.");
+		throw new Error("Failed to fetch filter data");
 	}
 }
 
@@ -25,7 +26,7 @@ export async function fetchAllRecruitmentOverviews(): Promise<
 		return data;
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch recruitment overviews.");
+		throw new Error("Failed to fetch recruitment overviews");
 	}
 }
 
@@ -54,7 +55,7 @@ export async function fetchAllRecruitmentOverviewsAdmin(): Promise<
 		return data;
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch recruitment overviews.");
+		throw new Error("Failed to fetch recruitment overviews");
 	}
 }
 
@@ -71,6 +72,23 @@ export async function fetchRecruitmentTitleById(
 		return data.length > 0 ? data[0].title : null;
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch recruitment title.");
+		throw new Error("Failed to fetch recruitment title");
+	}
+}
+
+export async function fetchApplicantsByRecruitmentId(
+	id: number,
+): Promise<ApplicantOverview[]> {
+	try {
+		const data = await sql<ApplicantOverview[]>`
+          SELECT id, name, email
+          FROM application_forms
+          WHERE recruitment_id = ${id}
+        `;
+
+		return data;
+	} catch (error) {
+		console.error("Database Error:", error);
+		throw new Error("Failed to fetch applicatns by recruitment id");
 	}
 }

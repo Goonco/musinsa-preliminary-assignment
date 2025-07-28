@@ -23,3 +23,9 @@ export type RecruitmentOverviewAdmin = {
 
 export const INFLOW_PATH = ["무신사 채용팀", "지인 추천", "링크드인"] as const;
 export type InflowPath = (typeof INFLOW_PATH)[number];
+
+export type ApplicantOverview = {
+	id: string;
+	name: string;
+	email: string;
+};

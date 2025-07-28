@@ -1,5 +1,6 @@
 import { Input } from "@headlessui/react";
 import { LucideAlarmClock, LucideGrip } from "lucide-react";
+import Link from "next/link";
 import { fetchAllRecruitmentOverviewsAdmin } from "@/lib/api";
 import { RecruitmentStatus } from "./_components";
 
@@ -23,7 +24,8 @@ export default async function Page() {
 
 				<div className="grid gap-3 grid-cols-3 overflow-hidden">
 					{recruitmentOverviews.map((overview) => (
-						<div
+						<Link
+							href={`admin/recruitment/${overview.id}`}
 							key={overview.id}
 							className="border border-gray-100 rounded-md"
 						>
@@ -64,7 +66,7 @@ export default async function Page() {
 									<p className="text-sm font-semibold">0</p>
 								</div>
 							</div>
-						</div>
+						</Link>
 					))}
 				</div>
 			</div>
