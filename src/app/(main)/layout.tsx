@@ -6,12 +6,10 @@ export default function MainLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body>
-				<Header />
-				<AppContainer>{children}</AppContainer>
-				<Footer />
-			</body>
-		</html>
+		<>
+			<Header />
+			<AppContainer>{children}</AppContainer>
+			<Footer />
+		</>
 	);
 }
