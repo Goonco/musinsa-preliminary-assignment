@@ -28,15 +28,15 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 
 		formData.append("resume", data.resume[0]);
 
-		// try {
-		// 	await fetch("/api/apply", {
-		// 		method: "POST",
-		// 		body: formData,
-		// 	});
-		// } catch (error) {
-		// 	console.log(error);
-		// } finally {
-		// }
+		try {
+			await fetch("/api/apply", {
+				method: "POST",
+				body: formData,
+			});
+		} catch (error) {
+			console.log(error);
+		} finally {
+		}
 	};
 
 	return (

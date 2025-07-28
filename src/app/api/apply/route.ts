@@ -17,8 +17,6 @@ export async function POST(request: Request) {
 			access: "public",
 		});
 
-		console.log(blob.url);
-
 		await sql`
         INSERT INTO application_forms (recruitment_id, name, email, resume, inflow_path)
         VALUES (${recruitmentId}, ${name}, ${email}, ${blob.url}, ${inflowPath});

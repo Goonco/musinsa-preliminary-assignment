@@ -1,5 +1,9 @@
 import sql from "@/lib/sql";
-import type { Filter, RecruitOverview } from "./types";
+import type {
+	Filter,
+	RecruitmentOverview,
+	RecruitmentOverviewAdmin,
+} from "./types";
 
 export async function fetchFilter(): Promise<Filter[]> {
 	try {
@@ -12,16 +16,45 @@ export async function fetchFilter(): Promise<Filter[]> {
 }
 
 export async function fetchAllRecruitmentOverviews(): Promise<
-	RecruitOverview[]
+	RecruitmentOverview[]
 > {
 	try {
 		const data = await sql<
-			RecruitOverview[]
-		>`SELECT id, title, subsidaries, occupations, place FROM recruitments`;
+			RecruitmentOverview[]
+		>`SELECT id, deadline, title, subsidaries, occupations, place FROM recruitments`;
 		return data;
 	} catch (error) {
 		console.error("Database Error:", error);
-		throw new Error("Failed to fetch filter data.");
+		throw new Error("Failed to fetch recruitment overviews.");
+	}
+}
+
+export async function fetchAllRecruitmentOverviewsAdmin(): Promise<
+	RecruitmentOverviewAdmin[]
+> {
+	try {
+		const data = await sql<RecruitmentOverviewAdmin[]>`
+        SELECT
+            r.id,
+            r.deadline,
+            r.title,
+            r.subsidaries,
+            r.occupations,
+            r.place,
+            COUNT(af.id) AS application_count
+        FROM
+            recruitments AS r
+        LEFT JOIN
+            application_forms AS af ON r.id = af.recruitment_id
+        GROUP BY
+            r.id
+		ORDER BY
+			r.id DESC;
+      `;
+		return data;
+	} catch (error) {
+		console.error("Database Error:", error);
+		throw new Error("Failed to fetch recruitment overviews.");
 	}
 }
 

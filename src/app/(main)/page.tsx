@@ -10,7 +10,7 @@ export default async function Page() {
 	return (
 		<div className="text-2xl">
 			<section className="px-base-x-padding">
-				<div className="py-16 pl-4 font-black text-[2.5rem] ">
+				<div className="py-16 pl-4 font-semibold text-4xl">
 					<h1>TEAM MUSINSA</h1>
 					<h2>Careers</h2>
 				</div>
