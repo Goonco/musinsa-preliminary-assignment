@@ -1,6 +1,13 @@
 "use client";
 
 import { LucideSmilePlus } from "lucide-react";
+import Link from "next/link";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
 	KanbanBoard,
 	KanbanCard,
@@ -29,8 +36,10 @@ const columns = [
 type ColumnedOverview = ApplicantOverview & { column: string };
 
 export function Kanban({
+	recruitmentId,
 	applicantOverviews,
 }: {
+	recruitmentId: string;
 	applicantOverviews: ApplicantOverview[];
 }) {
 	const datas = pushColumns(applicantOverviews);
@@ -53,13 +62,24 @@ export function Kanban({
 									id={feature.id}
 									key={feature.id}
 									name={feature.name}
-									className="bg-white rounded-md divide-y"
+									className="bg-white rounded-md divide-y relative"
 								>
-									<div className="px-3 py-2">
-										<p className="text-base font-bold">{overview.name}</p>
-										<p className="text-sm">{overview.email}</p>
-									</div>
-									<p className="px-3 py-2">평가 중</p>
+									<ContextMenu>
+										<ContextMenuTrigger className="absolute inset-0" />
+										<div className="px-3 py-2">
+											<p className="text-base font-bold">{overview.name}</p>
+											<p className="text-sm">{overview.email}</p>
+										</div>
+										<ContextMenuContent>
+											<ContextMenuItem>
+												<Link
+													href={`/admin/recruitment/${recruitmentId}/interview/${feature.id}`}
+												>
+													<p className="px-3 py-2">면접 생성하기</p>
+												</Link>{" "}
+											</ContextMenuItem>
+										</ContextMenuContent>
+									</ContextMenu>
 								</KanbanCard>
 							);
 						}}

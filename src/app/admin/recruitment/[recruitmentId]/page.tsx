@@ -21,7 +21,10 @@ export default async function Page({
 
 			<div className="flex-1 p-base-x-padding">
 				{/* <Input placeholder="이름, 이메일로 검색" /> */}
-				<Kanban applicantOverviews={applicantOverviews} />
+				<Kanban
+					recruitmentId={recruitmentId}
+					applicantOverviews={applicantOverviews}
+				/>
 			</div>
 		</div>
 	);

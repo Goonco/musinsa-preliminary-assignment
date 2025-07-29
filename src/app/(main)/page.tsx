@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Wallpaper from "@/../public/musinsa-wallpaper.webp";
 import { fetchAllRecruitmentOverviews, fetchFilter } from "@/lib/api";
-import { RecruitOverviewList } from "./_components";
+import { FilterSidebar, RecruitOverviewList } from "./_components";
 
 export default async function Page() {
 	const filters = await fetchFilter();
@@ -20,7 +20,7 @@ export default async function Page() {
 			</section>
 
 			<div className="flex flex-col w-full">
-				{/* <FilterSidebar filters={filters} /> */}
+				<FilterSidebar filters={filters} />
 				<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
 			</div>
 		</div>
