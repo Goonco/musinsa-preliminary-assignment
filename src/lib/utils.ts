@@ -8,7 +8,7 @@ import {
 	startOfWeek,
 } from "date-fns";
 import { twMerge } from "tailwind-merge";
-import type { UnavailableTime } from "@/app/admin/recruitment/[recruitmentId]/interview/[applicationId]/_components";
+import type { UnavailableTime } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

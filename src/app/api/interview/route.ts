@@ -1,9 +1,13 @@
 // app/api/interview/route.ts
 
 import { type NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import sql from "@/lib/sql";
 import type { Interview } from "@/lib/types";
+import IntervewConfirmationEmail from "./_intreview-confirmation-email";
 
+// biome-ignore lint: env var assertion
+const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(req: NextRequest) {
 	try {
 		const body = await req.json();
@@ -18,7 +22,22 @@ export async function POST(req: NextRequest) {
 			selected_time,
 		} = body as Interview;
 
-		await sql`
+		const applicationResult = await sql`
+		SELECT email, name 
+		FROM application_forms 
+		WHERE id = ${application_id}
+		`;
+
+		if (applicationResult.length === 0) {
+			return NextResponse.json(
+				{ error: "해당 지원서를 찾을 수 없습니다." },
+				{ status: 404 },
+			);
+		}
+
+		const { name: user_name, email: user_email } = applicationResult[0];
+
+		const interviewResult = await sql`
             INSERT INTO interviews (
                 title, 
                 start_date, 
@@ -38,7 +57,19 @@ export async function POST(req: NextRequest) {
                 ${application_id},
                 ${selected_time}
             )
+			RETURNING id
         `;
+
+		await resend.emails.send({
+			from: "onboarding@resend.dev",
+			to: [user_email],
+			subject: `[${title}] 인터뷰 일정이 확정되었습니다.`,
+			react: IntervewConfirmationEmail({
+				name: user_name,
+				interviewTitle: title,
+				url: `${process.env.NEXT_PUBLIC_BASE_URL}/client/interview/${interviewResult[0].id}`,
+			}),
+		});
 
 		return NextResponse.json({ sucess: true });
 	} catch (error) {

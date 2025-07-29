@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import {
 	LucideCalendarCheck,
@@ -5,24 +7,30 @@ import {
 	type LucideIcon,
 	LucideUserRoundCog,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type NavItem = {
 	text: string;
 	icon: LucideIcon;
+	path: string;
 };
 
 const NAV_ITEMS: NavItem[] = [
 	{
 		text: "공고",
 		icon: LucideGrip,
+		path: "/admin",
 	},
 	{
 		text: "면접",
 		icon: LucideCalendarCheck,
+		path: "/admin/interview",
 	},
 	{
 		text: "지원자",
 		icon: LucideUserRoundCog,
+		path: "/admin/applicant",
 	},
 ];
 
@@ -48,7 +56,8 @@ export function Sidebar() {
 }
 
 function NavBlock({ navItem }: { navItem: NavItem }) {
-	const isSelected = navItem.text === "공고";
+	const pathname = usePathname();
+	const isSelected = pathname === navItem.path;
 
 	return (
 		<div
@@ -58,9 +67,15 @@ function NavBlock({ navItem }: { navItem: NavItem }) {
 			)}
 		>
 			<navItem.icon className="size-3.5" />
-			<p className={clsx("text-sm", isSelected && "font-bold")}>
+			<Link
+				href={navItem.path}
+				className={clsx(
+					"text-sm cursor-pointer",
+					isSelected && "font-bold cursor-default",
+				)}
+			>
 				{navItem.text}
-			</p>
+			</Link>
 		</div>
 	);
 }
