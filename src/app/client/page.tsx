@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Wallpaper from "@/../public/musinsa-wallpaper.webp";
 import { fetchAllRecruitmentOverviews, fetchFilter } from "@/lib/api";
-import { FilterSidebar, RecruitOverviewList } from "./_components";
+import {
+	FilterComponents,
+	FilterSidebar,
+	RecruitOverviewList,
+} from "./_components";
 
 export default async function Page() {
 	const filters = await fetchFilter();
@@ -9,8 +13,8 @@ export default async function Page() {
 
 	return (
 		<div className="text-2xl">
-			<section className="px-base-x-padding">
-				<div className="py-16 pl-4 font-semibold text-4xl">
+			<section className="px-base-x-padding md:px-10 mb-12">
+				<div className="py-16 pl-4 font-semibold text-4xl md:text-5xl">
 					<h1>TEAM MUSINSA</h1>
 					<h2>Careers</h2>
 				</div>
@@ -19,9 +23,14 @@ export default async function Page() {
 				</div>
 			</section>
 
-			<div className="flex flex-col w-full">
-				<FilterSidebar filters={filters} />
-				<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
+			<div className="flex flex-col md:flex-row w-full md:px-10 md:gap-16">
+				<div className="md:block hidden">
+					<FilterSidebar filters={filters} />
+				</div>
+				<div className="md:flex-1">
+					<FilterComponents filters={filters} />
+					<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
+				</div>
 			</div>
 		</div>
 	);

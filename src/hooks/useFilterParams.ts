@@ -7,7 +7,7 @@ export const useFilterParams = () => {
 	const pathname = usePathname();
 
 	function update(params: URLSearchParams) {
-		router.push(`${pathname}?${params.toString()}`);
+		router.push(`${pathname}?${params.toString()}`, { scroll: false });
 	}
 
 	function clearFilter() {

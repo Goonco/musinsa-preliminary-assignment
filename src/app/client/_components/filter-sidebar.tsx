@@ -1,6 +1,7 @@
 "use client";
 
-import { Checkbox, Field, Label } from "@headlessui/react";
+import { Button, Checkbox, Field, Label } from "@headlessui/react";
+import { LucideChevronUp } from "lucide-react";
 import { useState } from "react";
 import { useFilterParams } from "@/hooks";
 import {
@@ -9,6 +10,7 @@ import {
 	type Filter,
 	type FilterKey,
 } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const categoryEngName: Record<Category, FilterKey> = {
 	구분: "subsidaries",
@@ -24,17 +26,31 @@ export const FilterSidebar = ({ filters }: { filters: Filter[] }) => {
 	}
 
 	return (
-		<div>
-			{CATEGORY.map((category) => (
-				<FiltersPerCategory
-					key={category}
-					category={category}
-					filters={filterFilters(category)}
-				/>
-			))}
-			<button onClick={clearFilter} type="button">
-				필터 초기화
-			</button>
+		<div className="p-5 md:p-0 md:w-52">
+			<div className="md:hidden mb-8 flex flex-row justify-between items-center">
+				<p className="text-[22px] font-medium">필터</p>
+				<Button
+					onClick={clearFilter}
+					className="block border-gray-300 border rounded-sm text-sm px-2 py-1 hover:bg-gray-100 cursor-pointer"
+				>
+					초기화
+				</Button>
+			</div>
+			<div className="divide-y space-y-4">
+				{CATEGORY.map((category) => (
+					<FiltersPerCategory
+						key={category}
+						category={category}
+						filters={filterFilters(category)}
+					/>
+				))}
+			</div>
+			<Button
+				onClick={clearFilter}
+				className="md:block hidden border-gray-300 border rounded-sm text-sm px-2 py-1 hover:bg-gray-100 cursor-pointer"
+			>
+				초기화
+			</Button>
 		</div>
 	);
 };
@@ -46,7 +62,7 @@ function FiltersPerCategory({
 	category: Category;
 	filters: Filter[];
 }) {
-	const [display, setDisplay] = useState<boolean>(false);
+	const [display, setDisplay] = useState<boolean>(true);
 	const { addFilter, removeFilter, hasFilter } = useFilterParams();
 
 	const handleCheckClick = (val: string, isClicked: boolean) => {
@@ -57,27 +73,33 @@ function FiltersPerCategory({
 
 	return (
 		<div>
-			<p className="text-lg">{category}</p>
-			<button type="button" onClick={() => setDisplay((prev) => !prev)}>
-				on/off
-			</button>
-			{display &&
-				filters.map((item) => {
-					const isClicked = hasFilter(categoryEngName[category], item.name);
-					return (
-						<div key={item.id}>
-							<Field className="flex flex-row text-sm">
-								<Checkbox
-									checked={isClicked}
-									onChange={() => handleCheckClick(item.name, isClicked)}
-									className="group block size-4 rounded border bg-white data-checked:bg-blue-500"
-								/>
+			<div className="flex flex-row justify-between items-center">
+				<p className="text-[16px] font-medium">{category}</p>
+				<Button onClick={() => setDisplay((prev) => !prev)}>
+					<LucideChevronUp
+						className={cn("size-5 transition", !display && "rotate-180")}
+					/>
+				</Button>
+			</div>
+			<div className="py-4 space-y-3">
+				{display &&
+					filters.map((item) => {
+						const isClicked = hasFilter(categoryEngName[category], item.name);
+						return (
+							<div key={item.id}>
+								<Field className="flex md:text-sm flex-row items-center gap-2">
+									<Checkbox
+										checked={isClicked}
+										onChange={() => handleCheckClick(item.name, isClicked)}
+										className="block size-4 rounded border bg-white data-checked:bg-black"
+									/>
 
-								<Label>{item.name}</Label>
-							</Field>
-						</div>
-					);
-				})}
+									<Label className="font-light">{item.name}</Label>
+								</Field>
+							</div>
+						);
+					})}
+			</div>
 		</div>
 	);
 }

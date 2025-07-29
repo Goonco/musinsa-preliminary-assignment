@@ -21,10 +21,11 @@ export async function fetchAllRecruitmentOverviews(): Promise<
 	RecruitmentOverview[]
 > {
 	try {
-		const data = await sql<
-			RecruitmentOverview[]
-		>`SELECT id, deadline, title, subsidaries, occupations, place FROM recruitments`;
-		return data;
+		return await sql<RecruitmentOverview[]>`
+            SELECT id, deadline, title, subsidaries, occupations, place 
+            FROM recruitments
+            ORDER BY deadline DESC
+        `;
 	} catch (error) {
 		console.error("Database Error:", error);
 		throw new Error("Failed to fetch recruitment overviews");
