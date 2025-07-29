@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 			start_date,
 			end_date,
 			duration,
-			unavailableTimes,
+			unavailable_times: unavailableTimes,
 			recruitment_id,
 			application_id,
 			selected_time,

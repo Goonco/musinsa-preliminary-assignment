@@ -48,7 +48,7 @@ export function Sidebar({
 			selected_time: null,
 			recruitment_id,
 			application_id,
-			unavailableTimes: unavailable_times,
+			unavailable_times: unavailable_times,
 		} as Interview;
 
 		try {

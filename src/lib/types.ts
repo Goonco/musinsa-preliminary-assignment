@@ -39,7 +39,7 @@ export type Interview = {
 	start_date: Date;
 	end_date: Date;
 	duration: number;
-	unavailableTimes: UnavailableTime[];
+	unavailable_times: UnavailableTime[];
 	recruitment_id: string;
 	application_id: string;
 	selected_time: null | number;

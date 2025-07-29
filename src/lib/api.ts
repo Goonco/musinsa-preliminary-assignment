@@ -2,6 +2,7 @@ import sql from "@/lib/sql";
 import type {
 	ApplicantOverview,
 	Filter,
+	Interview,
 	RecruitmentOverview,
 	RecruitmentOverviewAdmin,
 } from "./types";
@@ -90,5 +91,29 @@ export async function fetchApplicantsByRecruitmentId(
 	} catch (error) {
 		console.error("Database Error:", error);
 		throw new Error("Failed to fetch applicatns by recruitment id");
+	}
+}
+
+export async function fetchInterviewById(
+	id: string,
+): Promise<Interview | null> {
+	try {
+		const data = await sql<Interview[]>`
+          SELECT title, start_date, end_date, duration, unavailable_times, selected_time 
+          FROM interviews
+          WHERE id = ${id}
+        `;
+
+		if (data.length <= 0) return null;
+		if (typeof data[0].unavailable_times === "string") {
+			return {
+				...data[0],
+				unavailable_times: JSON.parse(data[0].unavailable_times),
+			};
+		}
+		return data[0];
+	} catch (error) {
+		console.error("Database Error:", error);
+		throw new Error("Failed to fetch interview");
 	}
 }
