@@ -29,3 +29,18 @@ export type ApplicantOverview = {
 	name: string;
 	email: string;
 };
+
+export type UnavailableTime = {
+	date: string;
+	hour: number;
+};
+export type Interview = {
+	title: string;
+	start_date: Date;
+	end_date: Date;
+	duration: number;
+	unavailableTimes: UnavailableTime[];
+	recruitment_id: string;
+	application_id: string;
+	selected_time: null | number;
+};

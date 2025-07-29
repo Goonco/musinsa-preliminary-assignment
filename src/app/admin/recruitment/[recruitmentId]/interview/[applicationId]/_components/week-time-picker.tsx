@@ -7,15 +7,9 @@ import {
 	format,
 	getDay,
 	setHours,
-	startOfWeek,
 } from "date-fns";
 import { ko } from "date-fns/locale";
-import { useState } from "react";
-
-export type UnavailableTime = {
-	date: string;
-	hour: number;
-};
+import type { UnavailableTime } from "@/lib/types";
 
 const dimmedStyle =
 	"bg-[repeating-linear-gradient(-45deg,transparent,transparent_4px,rgba(0,0,0,0.02)_4px,rgba(0,0,0,0.02)_8px)]";
@@ -23,12 +17,12 @@ const dimmedStyle2 = "bg-blue-200 ";
 const isWeekend = (date: Date) => getDay(date) === 0 || getDay(date) === 6;
 
 export function WeekTimePicker({
+	weekStart,
 	unavailableTimes = [],
 }: {
+	weekStart: Date;
 	unavailableTimes?: UnavailableTime[];
 }) {
-	const [currentDate, setCurrentDate] = useState(new Date("2025-06-23"));
-	const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
 	const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
 	const today = new Date("2025-06-23");

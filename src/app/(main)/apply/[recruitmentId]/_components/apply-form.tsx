@@ -19,7 +19,6 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 	} = useForm<Inputs>();
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
-		console.log(data);
 		const formData = new FormData();
 		formData.append("name", data.name);
 		formData.append("email", data.email);

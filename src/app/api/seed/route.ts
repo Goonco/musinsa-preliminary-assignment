@@ -15,16 +15,18 @@ async function seedFilters(forceReset: boolean) {
     );
   	`;
 
-	const insertedFilters = await Promise.all(
-		filters.map(async (filter) => {
-			return sql`
+	if (forceReset) {
+		const insertedFilters = await Promise.all(
+			filters.map(async (filter) => {
+				return sql`
 	        INSERT INTO filters (category, name)
 	        VALUES (${filter.category}, ${filter.name})
 	      `;
-		}),
-	);
+			}),
+		);
 
-	return insertedFilters;
+		return insertedFilters;
+	}
 }
 
 async function seedRecruitments(forceReset: boolean) {
@@ -43,16 +45,18 @@ async function seedRecruitments(forceReset: boolean) {
     );
 	`;
 
-	const insertedRecruitments = await Promise.all(
-		recruitments.map(async (recruitment) => {
-			return sql`
+	if (forceReset) {
+		const insertedRecruitments = await Promise.all(
+			recruitments.map(async (recruitment) => {
+				return sql`
 	        INSERT INTO recruitments (title, subsidaries, occupations, place, deadline)
 	        VALUES (${recruitment.title}, ${recruitment.subsidaries}, ${recruitment.occupations}, ${recruitment.place}, ${recruitment.deadline})
 	      `;
-		}),
-	);
+			}),
+		);
 
-	return insertedRecruitments;
+		return insertedRecruitments;
+	}
 }
 
 async function seedApplicationForm(forceReset: boolean) {
@@ -74,6 +78,29 @@ async function seedApplicationForm(forceReset: boolean) {
 	`;
 }
 
+async function seedInterviews(forceReset: boolean) {
+	if (forceReset) {
+		await sql`DROP TABLE IF EXISTS interviews CASCADE;`;
+	}
+
+	await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+	await sql`
+    CREATE TABLE IF NOT EXISTS interviews (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      start_date DATE NOT NULL,
+      end_date DATE NOT NULL,
+      duration INTEGER NOT NULL,
+      unavailable_times JSONB NOT NULL,
+      selected_time JSONB,
+      recruitment_id INTEGER NOT NULL,
+      application_id UUID NOT NULL,
+      FOREIGN KEY (recruitment_id) REFERENCES recruitments(id),
+      FOREIGN KEY (application_id) REFERENCES application_forms(id)
+    );
+	`;
+}
+
 export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);
@@ -83,10 +110,11 @@ export async function GET(request: NextRequest) {
 			await seedFilters(shouldReset);
 			await seedRecruitments(shouldReset);
 			await seedApplicationForm(shouldReset);
+			await seedInterviews(shouldReset);
 		});
 
 		return NextResponse.json({
-			message: `Database seeded successfully ${shouldReset && "(with reset)"}`,
+			message: `Database seeded successfully ${shouldReset ? "with reset" : "with no reset"}`,
 		});
 	} catch (error) {
 		console.error(error);
