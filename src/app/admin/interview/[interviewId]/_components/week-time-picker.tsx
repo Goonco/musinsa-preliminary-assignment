@@ -15,7 +15,6 @@ import { ko } from "date-fns/locale";
 import { useState } from "react";
 import type { Interview } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { InterviewConfirmButtion } from "./interview-confim-button";
 
 const dimmedStyle =
 	"bg-[repeating-linear-gradient(-45deg,transparent,transparent_4px,rgba(0,0,0,0.02)_4px,rgba(0,0,0,0.02)_8px)] cursor-default";
@@ -32,7 +31,6 @@ export function WeekTimePicker({
 	interviewId: string;
 }) {
 	const { start_date, duration, unavailable_times, selected_time } = interview;
-	const [hoveredSlot, setHoveredSlot] = useState<Date | null>(null);
 	const [clickedSlot, setclickedSlot] = useState<Date | null>(null);
 	const weekDays = Array.from({ length: 7 }, (_, i) => addDays(start_date, i));
 	const timeSlots = getTimeSlot(new Date());
@@ -43,15 +41,6 @@ export function WeekTimePicker({
 			end: setHours(date, 21),
 		});
 	}
-
-	const isHoverSelected = (date: Date): boolean => {
-		if (!hoveredSlot) return false;
-		const endDate = addHours(hoveredSlot, duration - 1);
-		return isWithinInterval(date, {
-			start: hoveredSlot,
-			end: endDate,
-		});
-	};
 
 	const isClickSelected = (date: Date): boolean => {
 		let slot: Date;
@@ -117,25 +106,12 @@ export function WeekTimePicker({
 											return (
 												<button
 													type="button"
-													onClick={() => {
-														setclickedSlot(slot);
-													}}
-													onMouseOver={() => {
-														setHoveredSlot(slot);
-													}}
-													onFocus={() => setHoveredSlot(slot)}
-													onMouseOut={() => {
-														setHoveredSlot(null);
-													}}
-													onBlur={() => {
-														setHoveredSlot(null);
-													}}
 													key={index}
 													className={cn(
 														"w-full block h-16 border-b cursor-pointer border-gray-200 relative",
 														isWeekend(day) && dimmedStyle,
 														isUnavailable && dimmedStyle2,
-														isHoverSelected(slot) && dimmedStyle3,
+
 														isClickSelected(slot) && dimmedStyle4,
 													)}
 												/>
@@ -148,11 +124,6 @@ export function WeekTimePicker({
 					</div>
 				</div>
 			</div>
-			<InterviewConfirmButtion
-				interviewId={interviewId}
-				clickedSlot={clickedSlot}
-				confirmed={selected_time}
-			/>
 		</div>
 	);
 }

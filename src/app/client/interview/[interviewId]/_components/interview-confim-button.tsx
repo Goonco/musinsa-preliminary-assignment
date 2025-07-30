@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "@headlessui/react";
-import { useState } from "react";
-import { UnavailableTime } from "@/lib/types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LucideLoaderCircle } from "lucide-react";
+import { confirmInterview } from "@/lib/query";
+import type { UnavailableTime } from "@/lib/types";
 import { cn, getTimeSlot } from "@/lib/utils";
 
 export function InterviewConfirmButtion({
@@ -14,40 +16,46 @@ export function InterviewConfirmButtion({
 	clickedSlot: Date | null;
 	confirmed: UnavailableTime | null;
 }) {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const queryClient = useQueryClient();
 
-	async function handleConfirmTime() {
-		setIsLoading(true);
-		try {
-			const response = await fetch("/api/interview/confirm", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					interviewId,
-					newSelectedTime: getTimeSlot(clickedSlot as Date),
-				}),
-			});
+	const { mutate, isPending } = useMutation({
+		mutationFn: confirmInterview,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ["interview", interviewId] });
+		},
+	});
 
-			const result = await response.json();
-		} catch (error) {
-			console.error(error);
-		} finally {
-			setIsLoading(false);
+	function handleConfirm() {
+		if (!clickedSlot) {
+			alert("먼저 면접 시간을 선택해주세요.");
+			return;
 		}
+
+		mutate({
+			interviewId,
+			newSelectedTime: getTimeSlot(clickedSlot),
+		});
 	}
+
+	console.log(confirmed, !confirmed, !!confirmed);
 
 	return (
 		<Button
-			onClick={handleConfirmTime}
-			disabled={!!confirmed || !clickedSlot}
+			onClick={handleConfirm}
+			disabled={confirmed !== null || !clickedSlot}
 			className={cn(
 				"block px-8 bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer",
-				!clickedSlot && "opacity-20 cursor-default hover:opacity-20",
+				(confirmed !== null || !clickedSlot) &&
+					"opacity-20 cursor-default hover:opacity-20",
 			)}
 		>
-			{confirmed ? "면접 확정" : isLoading ? "로딩중" : "면접 확정"}
+			{confirmed ? (
+				"면접 확정"
+			) : isPending ? (
+				<LucideLoaderCircle className="size-4 animate-spin" />
+			) : (
+				"면접 확정"
+			)}
 		</Button>
 	);
 }

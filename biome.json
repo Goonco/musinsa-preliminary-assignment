@@ -21,6 +21,9 @@
 			},
 			"suspicious": {
 				"noArrayIndexKey": "warn"
+			},
+			"a11y": {
+				"useKeyWithMouseEvents": "off"
 			}
 		}
 	},

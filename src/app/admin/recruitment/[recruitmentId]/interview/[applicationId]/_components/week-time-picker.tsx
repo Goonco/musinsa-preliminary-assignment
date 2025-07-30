@@ -25,13 +25,13 @@ export function WeekTimePicker({
 }) {
 	const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
-	const today = new Date("2025-06-23");
-	const startTime = setHours(today, 9);
-	const endTime = setHours(today, 21);
-	const timeSlots = eachHourOfInterval({
-		start: startTime,
-		end: endTime,
-	});
+	function getTimeSlot(date: Date) {
+		return eachHourOfInterval({
+			start: setHours(date, 9),
+			end: setHours(date, 21),
+		});
+	}
+	const timeSlots = getTimeSlot(new Date());
 
 	const isSlotUnavailable = (day: Date, slot: Date) => {
 		if (unavailableTimes.length === 0) return false;
@@ -48,46 +48,55 @@ export function WeekTimePicker({
 			<div className="w-full flex">
 				<div className="w-16"></div>
 				{weekDays.map((weekDay, idx) => (
-					<div className="flex-1 text-center" key={idx}>
+					<div
+						className="flex-1 text-center text-sm text-gray-500 py-2"
+						key={idx}
+					>
 						{format(weekDay, "d E", { locale: ko })}
 					</div>
 				))}
 			</div>
 			<div className="flex flex-row">
-				<div className="w-16 text-xs text-gray-500">
+				<div className="w-16">
 					<div className="h-4"></div>
 					{timeSlots.map((slot, index) => (
-						<div key={index} className="h-16 flex justify-end pr-1">
+						<div
+							key={index}
+							className="text-xs text-gray-500 h-16 flex justify-end pr-1"
+						>
 							<p className="-mt-2">{format(slot, "a h시", { locale: ko })}</p>
 						</div>
 					))}
 				</div>
 
 				<div className="flex-1 grid grid-cols-7">
-					{weekDays.map((day) => (
-						<div
-							key={day.toString()}
-							className="flex flex-col border-r border-gray-200"
-						>
-							<div className="relative">
-								<div className={clsx("h-4 border-b", dimmedStyle)} />
+					{weekDays.map((day) => {
+						const timeSlots = getTimeSlot(day);
+						return (
+							<div
+								key={day.toString()}
+								className="flex flex-col border-r border-gray-200"
+							>
+								<div className="relative">
+									<div className={clsx("h-4 border-b", dimmedStyle)} />
 
-								{timeSlots.map((slot, index) => {
-									const isUnavailable = isSlotUnavailable(day, slot);
-									return (
-										<div
-											key={index}
-											className={clsx(
-												"h-16 border-b border-gray-200 relative",
-												isWeekend(day) && dimmedStyle,
-												isUnavailable && dimmedStyle2,
-											)}
-										/>
-									);
-								})}
+									{timeSlots.map((slot, index) => {
+										const isUnavailable = isSlotUnavailable(day, slot);
+										return (
+											<div
+												key={index}
+												className={clsx(
+													"h-16 border-b border-gray-200 relative",
+													isWeekend(day) && dimmedStyle,
+													isUnavailable && dimmedStyle2,
+												)}
+											/>
+										);
+									})}
+								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			</div>
 		</div>

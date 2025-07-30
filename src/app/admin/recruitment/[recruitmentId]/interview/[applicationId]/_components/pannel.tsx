@@ -2,10 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { addDays } from "date-fns";
+import { LucideCalendar, LucideLoaderCircle } from "lucide-react";
 import { useState } from "react";
+import { useDebounce } from "use-debounce";
 import { fetchCalendarEvents } from "@/lib/query";
 import type { UnavailableTime } from "@/lib/types";
 import {
+	cn,
 	type GoogleEvent,
 	transformEventsToUnavailableTimes,
 	weekEndDate,
@@ -24,12 +27,16 @@ export function Pannel({
 	const weekStart = weekStartDate(baseDate);
 	const weekEnd = weekEndDate(baseDate);
 
+	console.log("weekStart", weekStart);
+	console.log("weekEnd", weekEnd);
+
+	const [debouncedBaseDate] = useDebounce(baseDate, 500);
 	function nextWeek() {
-		setBaseDate(addDays(baseDate, 7));
+		setBaseDate((current) => addDays(current, 7));
 	}
 
 	function prevWeek() {
-		setBaseDate(addDays(baseDate, -7));
+		setBaseDate((current) => addDays(current, -7));
 	}
 
 	const { data, isLoading, isError } = useQuery<
@@ -37,7 +44,7 @@ export function Pannel({
 		Error,
 		UnavailableTime[]
 	>({
-		queryKey: ["calendarEvents", baseDate.toISOString()],
+		queryKey: ["calendarEvents", debouncedBaseDate.toISOString()],
 		queryFn: () =>
 			fetchCalendarEvents(weekStart.toISOString(), weekEnd.toISOString()),
 		select: (data) => transformEventsToUnavailableTimes(data),
@@ -54,9 +61,14 @@ export function Pannel({
 				recruitment_id={recruitmentId}
 				application_id={applicationId}
 			/>
-			<div className="flex-1 flex flex-col min-h-0">
+			<div
+				className={cn(
+					"flex-1 bg-[#F3F4F6] pl-2 pr-8 justify-center items-center flex flex-col min-h-0",
+					data && "bg-white",
+				)}
+			>
 				{isError && <GoolgeLoginButton />}
-				{isLoading && <div>캘린더 일정을 불러오는 중입니다...</div>}
+				{isLoading && <LucideLoaderCircle className="animate-spin" />}
 				{!isLoading && !isError && (
 					<WeekTimePicker weekStart={weekStart} unavailableTimes={data} />
 				)}
@@ -99,8 +111,9 @@ export function GoolgeLoginButton() {
 		<button
 			type="button"
 			onClick={handleLogin}
-			className="p-2 bg-blue-500 text-white rounded"
+			className="px-3 py-2 flex items-center justify-center gap-1 text-sm bg-blue-500 text-white rounded"
 		>
+			<LucideCalendar className="size-4" />
 			구글 캘린더 연동하기
 		</button>
 	);

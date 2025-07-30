@@ -36,13 +36,13 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar() {
 	return (
-		<div className="bg-[#FAFAFA] shadow-[-8px_0px_10px_-10px_rgba(0,0,0,0.1)_inset] min-w-60">
+		<div className="bg-[#FAFAFA] shadow-[-8px_0px_10px_-10px_rgba(0,0,0,0.1)_inset] md:min-w-60">
 			<div className="border-b border-gray-200 ">
 				<div className="p-3 flex flex-row items-center gap-2">
 					<div className="size-10 flex justify-center items-center bg-white rounded-sm shadow-sm text-[8px]">
 						MUSINSA
 					</div>
-					<p className="text-lg font-bold">무신사</p>
+					<p className="hidden md:block text-lg font-bold">무신사</p>
 				</div>
 
 				<nav className="py-3">
@@ -62,19 +62,19 @@ function NavBlock({ navItem }: { navItem: NavItem }) {
 	return (
 		<div
 			className={clsx(
-				" w-full gap-2 py-1.5 px-4 flex flex-row items-center text-gray-600",
+				"w-full py-1.5 px-4 text-gray-600",
 				isSelected && "bg-[#EBEBEB]",
 			)}
 		>
-			<navItem.icon className="size-3.5" />
 			<Link
 				href={navItem.path}
 				className={clsx(
-					"text-sm w-full cursor-pointer",
+					"text-sm w-full cursor-pointer flex flex-row items-center gap-2 justify-center md:justify-start",
 					isSelected && "font-bold cursor-default",
 				)}
 			>
-				{navItem.text}
+				<navItem.icon className="size-3.5" />
+				<p className="hidden md:block">{navItem.text}</p>
 			</Link>
 		</div>
 	);

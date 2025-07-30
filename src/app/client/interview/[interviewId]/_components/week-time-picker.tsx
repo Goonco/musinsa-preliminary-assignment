@@ -56,7 +56,7 @@ export function WeekTimePicker({
 	const isClickSelected = (date: Date): boolean => {
 		let slot: Date;
 
-		if (selected_time) {
+		if (selected_time?.date) {
 			const parsedDate = parseISO(selected_time.date);
 			slot = setHours(parsedDate, selected_time.hour);
 		} else if (clickedSlot) {
@@ -70,14 +70,32 @@ export function WeekTimePicker({
 		});
 	};
 
-	const isSlotUnavailable = (day: Date, slot: Date) => {
+	const isSlotUnavailable = (date: Date) => {
 		if (unavailable_times.length === 0) return false;
 
-		const formattedDay = format(day, "yyyy-MM-dd");
-		const currentHour = slot.getHours();
+		const formattedDay = format(date, "yyyy-MM-dd");
+		const currentHour = date.getHours();
 		return unavailable_times.some(
 			(item) => item.date === formattedDay && item.hour === currentHour,
 		);
+	};
+
+	const isHoveredRangeValid = (): boolean => {
+		if (!hoveredSlot) return true;
+
+		const lastSlotInHoveredRange = addHours(hoveredSlot, duration - 1);
+		if (lastSlotInHoveredRange.getHours() > 21) {
+			return false;
+		}
+
+		const hoveredSlots = Array.from({ length: duration }, (_, i) =>
+			addHours(hoveredSlot, i),
+		);
+
+		const isAnySlotInvalid = hoveredSlots.some(
+			(slot) => isWeekend(slot) || isSlotUnavailable(slot),
+		);
+		return !isAnySlotInvalid;
 	};
 
 	return (
@@ -111,33 +129,38 @@ export function WeekTimePicker({
 								>
 									<div className="relative">
 										<div className={clsx("h-4 border-b", dimmedStyle)} />
-
 										{timeSlots.map((slot, index) => {
-											const isUnavailable = isSlotUnavailable(day, slot);
+											const isSlotCurrentlyUnavailable =
+												isWeekend(slot) || isSlotUnavailable(slot);
+
+											const isCurrentlyHovered = isHoverSelected(slot);
+
+											const isHoverRangeValid = isHoveredRangeValid();
+
 											return (
 												<button
 													type="button"
 													onClick={() => {
-														setclickedSlot(slot);
+														if (isHoverRangeValid) {
+															setclickedSlot(hoveredSlot);
+														}
 													}}
 													onMouseOver={() => {
 														setHoveredSlot(slot);
 													}}
-													onFocus={() => setHoveredSlot(slot)}
-													onMouseOut={() => {
-														setHoveredSlot(null);
-													}}
-													onBlur={() => {
-														setHoveredSlot(null);
-													}}
 													key={index}
 													className={cn(
 														"w-full block h-16 border-b cursor-pointer border-gray-200 relative",
-														isWeekend(day) && dimmedStyle,
-														isUnavailable && dimmedStyle2,
-														isHoverSelected(slot) && dimmedStyle3,
+
+														isSlotCurrentlyUnavailable && dimmedStyle,
+
+														isCurrentlyHovered && {
+															"bg-red-200 bg-opacity-70": !isHoverRangeValid,
+															"bg-green-50": isHoverRangeValid,
+														},
 														isClickSelected(slot) && dimmedStyle4,
 													)}
+													disabled={isSlotCurrentlyUnavailable}
 												/>
 											);
 										})}
