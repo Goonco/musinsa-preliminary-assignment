@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import Wallpaper from "@/../public/musinsa-wallpaper.webp";
 import { fetchAllRecruitmentOverviews, fetchFilter } from "@/lib/api";
 import {
@@ -6,6 +7,8 @@ import {
 	FilterSidebar,
 	RecruitOverviewList,
 } from "./_components";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
 	const filters = await fetchFilter();
@@ -28,8 +31,10 @@ export default async function Page() {
 					<FilterSidebar filters={filters} />
 				</div>
 				<div className="md:flex-1">
-					<FilterComponents filters={filters} />
-					<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
+					<Suspense fallback={<div>Loading...</div>}>
+						<FilterComponents filters={filters} />
+						<RecruitOverviewList recruitmentOverviews={recruitmentOverviews} />
+					</Suspense>
 				</div>
 			</div>
 		</div>

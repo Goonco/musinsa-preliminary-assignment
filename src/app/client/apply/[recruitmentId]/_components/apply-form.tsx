@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 type Inputs = {
 	name: string;
 	email: string;
-	resume: FileList | null;
+	resume: FileList;
 	inflowPath: InflowPath | null;
 };
 
@@ -35,7 +35,6 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 		defaultValues: {
 			name: "",
 			email: "",
-			resume: null,
 			inflowPath: null,
 		},
 	});
@@ -44,7 +43,9 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 		const formData = new FormData();
 		formData.append("name", data.name);
 		formData.append("email", data.email);
-		formData.append("inflowPath", data.inflowPath);
+		if (data.inflowPath) {
+			formData.append("inflowPath", data.inflowPath);
+		}
 		formData.append("recruitmentId", recruitmentId);
 
 		formData.append("resume", data.resume[0]);

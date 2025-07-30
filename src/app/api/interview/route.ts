@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
                 ${JSON.stringify(unavailableTimes)},
                 ${recruitment_id},
                 ${application_id},
-                ${selected_time}
+                ${JSON.stringify(selected_time)}
             )
 			RETURNING id
         `;
