@@ -6,6 +6,7 @@ import { RecruitmentStatus } from "./_components";
 
 export default async function Page() {
 	const recruitmentOverviews = await fetchAllRecruitmentOverviewsAdmin();
+	console.log(recruitmentOverviews);
 
 	return (
 		<div>

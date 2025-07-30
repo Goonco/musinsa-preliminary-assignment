@@ -122,7 +122,7 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 
 			<Button
 				disabled={isLoading}
-				className="block w-full bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer"
+				className="w-full bg-black hover:opacity-70 flex justify-center items-center text-white text-lg py-3 rounded-lg cursor-pointer"
 				type="submit"
 			>
 				{isLoading ? (

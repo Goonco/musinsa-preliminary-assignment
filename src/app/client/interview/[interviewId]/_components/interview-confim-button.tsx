@@ -38,18 +38,18 @@ export function InterviewConfirmButtion({
 	}
 
 	const isConfirmed = !!confirmed?.date;
+	const flag = isConfirmed || isSuccess;
 
 	return (
 		<Button
 			onClick={handleConfirm}
-			disabled={isConfirmed || !clickedSlot}
+			disabled={flag || !clickedSlot}
 			className={cn(
 				"block px-8 bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer",
-				(isConfirmed || !clickedSlot) &&
-					"opacity-20 cursor-default hover:opacity-20",
+				(flag || !clickedSlot) && "opacity-20 cursor-default hover:opacity-20",
 			)}
 		>
-			{isConfirmed || isSuccess ? (
+			{flag ? (
 				"확정된 면접"
 			) : isPending ? (
 				<LucideLoaderCircle className="size-4 animate-spin" />
