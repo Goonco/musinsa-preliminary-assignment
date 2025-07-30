@@ -5,7 +5,7 @@ export default function MainLayout({
 }>) {
 	return (
 		<>
-			<header className="w-full p-3 flex flex-row items-center border-b space-x-3 border-gray-300">
+			<header className="md:px-8 w-full p-3 flex flex-row items-center border-b space-x-3 border-gray-300">
 				<p className="text-[0.5rem]">MUSINSA</p>
 				<p className="font-bold text-xl">무신사</p>
 			</header>

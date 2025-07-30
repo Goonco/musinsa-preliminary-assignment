@@ -1,6 +1,5 @@
-import { LucideArrowLeft } from "lucide-react";
 import { fetchRecruitmentTitleById } from "@/lib/api";
-import { ApplyForm } from "./_components";
+import { ApplyForm, BackButton } from "./_components";
 
 export default async function Page({
 	params,
@@ -14,14 +13,13 @@ export default async function Page({
 
 	if (!recruitmentTitle) return <div>존재하지 않는 모집 공고입니다.</div>;
 	return (
-		<div className="px-base-x-padding">
-			<div className="py-8 space-y-8">
-				<div className="px-4">
-					<LucideArrowLeft />
-				</div>
+		<div className="px-base-x-padding max-w-[720px] mx-auto">
+			<div className="mb-20">
+				<BackButton />
+
 				<div className="space-y-3">
 					<p className="text-4xl font-medium">지원서 작성하기</p>
-					<p className="font-bold text-gray-600 ">{recruitmentTitle}</p>
+					<p className="font-bold text-gray-500 ">{recruitmentTitle}</p>
 				</div>
 			</div>
 

@@ -1,14 +1,29 @@
 "use client";
 
-import { Input } from "@headlessui/react";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { Button, Input } from "@headlessui/react";
+import { LucideAlertCircle, LucideAsterisk, LucideUpload } from "lucide-react";
+import { type InputHTMLAttributes, useState } from "react";
+import {
+	type FieldErrors,
+	type SubmitHandler,
+	UseFormRegister,
+	useForm,
+} from "react-hook-form";
 import { INFLOW_PATH, type InflowPath } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 type Inputs = {
 	name: string;
 	email: string;
-	resume: FileList;
-	inflowPath: InflowPath;
+	resume: FileList | null;
+	inflowPath: InflowPath | null;
+};
+
+const ERROR_MSG: Record<keyof Inputs, string> = {
+	name: "이름을 알맞게 입력해 주세요.",
+	email: "이메일을 알맞게 입력해 주세요.",
+	resume: "이력서 파일을 알맞게 삽입해 주세요.",
+	inflowPath: "유입 경로를 알맞게 선택해 주세요.",
 };
 
 export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
@@ -16,7 +31,14 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 		register,
 		formState: { errors },
 		handleSubmit,
-	} = useForm<Inputs>();
+	} = useForm<Inputs>({
+		defaultValues: {
+			name: "",
+			email: "",
+			resume: null,
+			inflowPath: null,
+		},
+	});
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		const formData = new FormData();
@@ -39,56 +61,145 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)} className="space-y-16 mb-20">
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-20 mb-20">
 			<div>
 				<FormHeading heading="기본 정보" required />
 
-				<div className="space-y-2">
-					<Input
-						{...register("name", { required: true })}
+				<div className="space-y-4">
+					<CustomInput
+						errors={errors}
+						formName="name"
+						register={register}
 						placeholder="이름"
-						autoComplete="off"
-						className="w-full border-b border-gray-200 py-3 font-normal px-2 data-focus:outline-black"
 					/>
-					{errors.name && <p>이름을 알맞게 입력해주세요.</p>}
 
-					<Input
-						{...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+					<CustomInput
+						errors={errors}
+						formName="email"
+						register={register}
 						placeholder="이메일"
-						autoComplete="off"
-						className="w-full border-b border-gray-200 py-3 font-normal"
 					/>
-					{errors.email && <p>이메일을 알맞게 입력해주세요.</p>}
 				</div>
 			</div>
 
 			<div>
 				<FormHeading heading="이력서" required />
-				<Input
-					{...register("resume", { required: true })}
+				<CustomInput
+					errors={errors}
+					formName="resume"
+					register={register}
 					type="file"
-					className="w-full"
 				/>
 			</div>
 
 			<div>
-				<FormHeading heading="공고를 처음 접한 경로" required />
-				<select {...register("inflowPath")}>
+				<FormHeading heading="공고를 처음 접한 경로" />
+				<div className="flex flex-col gap-2">
 					{INFLOW_PATH.map((inflowPath) => (
-						<option key={inflowPath} value={inflowPath}>
-							{inflowPath}
-						</option>
+						<label
+							key={inflowPath}
+							className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-gray-50"
+						>
+							<input
+								type="radio"
+								value={inflowPath}
+								{...register("inflowPath")}
+							/>
+							<span>{inflowPath}</span>
+						</label>
 					))}
-				</select>
+				</div>
 			</div>
 
-			<button
-				className="block w-full bg-black text-white text-lg py-3 rounded-lg cursor-pointer"
+			<Button
+				className="block w-full bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer"
 				type="submit"
 			>
 				제출하기
-			</button>
+			</Button>
 		</form>
+	);
+}
+
+type CustomInputProps = {
+	errors: FieldErrors<Inputs>;
+	formName: keyof Inputs;
+	register: UseFormRegister<Inputs>;
+} & InputHTMLAttributes<HTMLInputElement>;
+
+function CustomInput({
+	errors,
+	formName,
+	register,
+	...rest
+}: CustomInputProps) {
+	const { ref, onChange, ...restOfRegister } = register(formName, {
+		required: true,
+	});
+
+	const [fileName, setFileName] = useState("");
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		onChange(e);
+		e.target.files?.[0] ? setFileName(e.target.files[0].name) : setFileName("");
+	};
+
+	return (
+		<div className="space-y-2">
+			{formName === "resume" ? (
+				<div className="w-full space-y-2">
+					<p className="flex flex-row items-center text-sm gap-1 text-gray-500">
+						<LucideAsterisk className="size-3" />
+						PDF 형식으로 제출해주세요.
+					</p>
+					<label
+						htmlFor={formName}
+						className={cn(
+							"w-full flex flex-row gap-2 items-center px-4 py-3 bg-gray-200 text-gray-700 rounded-md cursor-pointer hover:bg-gray-300",
+							errors[formName] && "bg-red-50 text-red-600",
+						)}
+					>
+						{fileName ? (
+							<span>선택된 파일: {fileName}</span>
+						) : (
+							<>
+								<LucideUpload className="size-4" /> 파일 선택
+							</>
+						)}
+					</label>
+
+					<input
+						id={formName}
+						type="file"
+						className="hidden"
+						{...restOfRegister}
+						ref={ref}
+						onChange={handleFileChange}
+					/>
+				</div>
+			) : (
+				<Input
+					{...register(
+						formName,
+						formName === "email"
+							? { required: true, pattern: /^\S+@\S+$/i }
+							: { required: true },
+					)}
+					{...rest}
+					autoComplete="off"
+					className={cn(
+						"w-full border-b border-gray-200 py-3 font-normal px-2 data-focus:outline-none",
+						errors[formName] && "bg-red-50 border-red-600 text-red-600",
+					)}
+				/>
+			)}
+
+			{errors[formName] && (
+				<p className="flex flex-row items-center text-sm gap-1 text-red-500">
+					<LucideAlertCircle className="size-3" />
+					{ERROR_MSG[formName]}
+				</p>
+			)}
+		</div>
 	);
 }
 
