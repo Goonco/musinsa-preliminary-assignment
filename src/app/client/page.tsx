@@ -8,8 +8,6 @@ import {
 	RecruitOverviewList,
 } from "./_components";
 
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
 	const filters = await fetchFilter();
 	const recruitmentOverviews = await fetchAllRecruitmentOverviews();
