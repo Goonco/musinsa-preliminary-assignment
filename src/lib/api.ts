@@ -24,6 +24,8 @@ export async function fetchAllRecruitmentOverviews(): Promise<
 		return await sql<RecruitmentOverview[]>`
             SELECT id, deadline, title, subsidaries, occupations, place 
             FROM recruitments
+            WHERE 
+                deadline::DATE >= CURRENT_DATE - INTERVAL '1 month'
             ORDER BY deadline DESC
         `;
 	} catch (error) {
