@@ -42,5 +42,5 @@ export type Interview = {
 	unavailable_times: UnavailableTime[];
 	recruitment_id: string;
 	application_id: string;
-	selected_time: null | number;
+	selected_time: null | UnavailableTime;
 };

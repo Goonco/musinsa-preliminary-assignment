@@ -70,7 +70,7 @@ function NavBlock({ navItem }: { navItem: NavItem }) {
 			<Link
 				href={navItem.path}
 				className={clsx(
-					"text-sm cursor-pointer",
+					"text-sm w-full cursor-pointer",
 					isSelected && "font-bold cursor-default",
 				)}
 			>

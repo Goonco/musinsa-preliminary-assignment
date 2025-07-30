@@ -28,6 +28,13 @@ export function weekEndDate(date: Date) {
 	return endOfWeek(date, { weekStartsOn: 0 });
 }
 
+export function getTimeSlot(date: Date): UnavailableTime {
+	return {
+		date: format(date, "yyyy-MM-dd"),
+		hour: date.getHours(),
+	};
+}
+
 type GoogleEvent = {
 	summary: string;
 	start: { dateTime: string; date?: null };
