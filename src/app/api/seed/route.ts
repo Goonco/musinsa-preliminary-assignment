@@ -1,3 +1,4 @@
+import { del, list } from "@vercel/blob";
 import { type NextRequest, NextResponse } from "next/server";
 import { filters, recruitments } from "@/lib/placehodler-datas";
 import sql from "@/lib/sql";
@@ -101,10 +102,24 @@ async function seedInterviews(forceReset: boolean) {
 	`;
 }
 
+async function initBlobDB() {
+	const { blobs } = await list();
+
+	if (blobs.length === 0) {
+		console.log("삭제할 파일이 없습니다.");
+		return NextResponse.json({ message: "삭제할 파일이 없습니다." });
+	}
+
+	const urlsToDelete = blobs.map((blob) => blob.url);
+	await del(urlsToDelete);
+}
+
 export async function GET(request: NextRequest) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const shouldReset = searchParams.get("reset") === "true";
+
+		if (shouldReset) await initBlobDB();
 
 		await sql.begin(async (sql) => {
 			await seedFilters(shouldReset);

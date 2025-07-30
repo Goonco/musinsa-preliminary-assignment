@@ -80,7 +80,10 @@ function FiltersPerCategory({
 					<p className="text-[16px] font-medium">{category}</p>
 					<Button onClick={() => setDisplay((prev) => !prev)}>
 						<LucideChevronUp
-							className={cn("size-5 transition", !display && "rotate-180")}
+							className={cn(
+								"size-5 transition cursor-pointer",
+								!display && "rotate-180",
+							)}
 						/>
 					</Button>
 				</div>
@@ -94,7 +97,7 @@ function FiltersPerCategory({
 										<Checkbox
 											checked={isClicked}
 											onChange={() => handleCheckClick(item.name, isClicked)}
-											className="block size-4 rounded border bg-white data-checked:bg-black"
+											className="cursor-pointer block size-4 rounded border bg-white data-checked:bg-black"
 										/>
 
 										<Label className="font-light">{item.name}</Label>

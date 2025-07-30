@@ -54,10 +54,8 @@ export function RecruitOverviewList({
 						</div>
 					))
 				) : (
-					<p className="size-full py-40 flex justify-center items-center">
-						<p className="text-base font-light text-gray-300">
-							일치하는 결과가 없습니다.
-						</p>
+					<p className="size-full py-40 flex justify-center items-center text-base font-light text-gray-300">
+						일치하는 결과가 없습니다.
 					</p>
 				)}
 			</div>
