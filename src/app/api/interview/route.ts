@@ -6,7 +6,6 @@ import sql from "@/lib/sql";
 import type { Interview } from "@/lib/types";
 import IntervewConfirmationEmail from "./_intreview-confirmation-email";
 
-// biome-ignore lint: env var assertion
 const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(req: NextRequest) {
 	try {
@@ -61,7 +60,8 @@ export async function POST(req: NextRequest) {
         `;
 
 		await resend.emails.send({
-			from: "onboarding@resend.dev",
+			// biome-ignore lint: env var assertion
+			from: process.env.NEXT_PUBLIC_RESEND_DOMAIN!,
 			to: [user_email],
 			subject: `[${title}] 인터뷰 일정이 확정되었습니다.`,
 			react: IntervewConfirmationEmail({
