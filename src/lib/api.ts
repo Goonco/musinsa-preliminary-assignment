@@ -70,7 +70,7 @@ export async function fetchRecruitmentTitleById(
 		const data = await sql<{ title: string }[]>`
           SELECT title 
           FROM recruitments 
-          WHERE id = ${id}
+          WHERE id = ${id} AND deadline::DATE > NOW()
         `;
 
 		return data.length > 0 ? data[0].title : null;

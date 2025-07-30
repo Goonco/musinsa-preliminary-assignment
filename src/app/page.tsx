@@ -91,6 +91,7 @@ export default function Page() {
 						<LucideShapes className="size-4" />
 						대시보드 보러가기
 					</Link>
+					<p>슬랙 초대코드.</p>
 				</div>
 			</div>
 		</div>

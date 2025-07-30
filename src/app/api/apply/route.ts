@@ -11,8 +11,6 @@ export async function POST(request: Request) {
 		const inflowPath = formData.get("inflowPath") as string;
 		const resume = formData.get("resume") as File;
 
-		console.log(name, email, recruitmentId, inflowPath, resume);
-
 		const blob = await put(resume.name, resume, {
 			access: "public",
 		});

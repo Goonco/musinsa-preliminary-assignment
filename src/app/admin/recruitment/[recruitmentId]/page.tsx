@@ -1,3 +1,4 @@
+import { Input } from "@headlessui/react";
 import { LucideUser } from "lucide-react";
 import { fetchApplicantsByRecruitmentId } from "@/lib/api";
 import { Kanban } from "./_components";
@@ -20,7 +21,7 @@ export default async function Page({
 			</div>
 
 			<div className="flex-1 p-base-x-padding">
-				{/* <Input placeholder="이름, 이메일로 검색" /> */}
+				<Input placeholder="이름, 이메일로 검색" />
 				<Kanban
 					recruitmentId={recruitmentId}
 					applicantOverviews={applicantOverviews}

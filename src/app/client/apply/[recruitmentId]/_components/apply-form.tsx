@@ -6,7 +6,7 @@ import { type InputHTMLAttributes, useState } from "react";
 import {
 	type FieldErrors,
 	type SubmitHandler,
-	UseFormRegister,
+	type UseFormRegister,
 	useForm,
 } from "react-hook-form";
 import { INFLOW_PATH, type InflowPath } from "@/lib/types";
