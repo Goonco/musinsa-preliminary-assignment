@@ -1,7 +1,12 @@
 "use client";
 
 import { Button, Input } from "@headlessui/react";
-import { LucideAlertCircle, LucideAsterisk, LucideUpload } from "lucide-react";
+import {
+	LucideAlertCircle,
+	LucideAsterisk,
+	LucideLoaderCircle,
+	LucideUpload,
+} from "lucide-react";
 import { type InputHTMLAttributes, useState } from "react";
 import {
 	type FieldErrors,
@@ -27,6 +32,7 @@ const ERROR_MSG: Record<keyof Inputs, string> = {
 };
 
 export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
+	const [isLoading, setLoading] = useState<boolean>(false);
 	const {
 		register,
 		formState: { errors },
@@ -51,6 +57,7 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 		formData.append("resume", data.resume[0]);
 
 		try {
+			setLoading(true);
 			await fetch("/api/apply", {
 				method: "POST",
 				body: formData,
@@ -58,6 +65,7 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 		} catch (error) {
 			console.log(error);
 		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -113,10 +121,15 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 			</div>
 
 			<Button
+				disabled={isLoading}
 				className="block w-full bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer"
 				type="submit"
 			>
-				제출하기
+				{isLoading ? (
+					<LucideLoaderCircle className="size-4 animate-spin" />
+				) : (
+					"제출하기"
+				)}
 			</Button>
 		</form>
 	);

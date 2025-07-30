@@ -99,12 +99,13 @@ export function GoolgeLoginButton() {
 			scope: scope,
 			access_type: "offline",
 			prompt: "consent",
+			state: window.location.pathname,
 		};
 
 		const queryString = new URLSearchParams(params).toString();
 		const authUrl = `${oauth2Endpoint}?${queryString}`;
 
-		window.open(authUrl, "_blank");
+		window.location.href = authUrl;
 	};
 
 	return (

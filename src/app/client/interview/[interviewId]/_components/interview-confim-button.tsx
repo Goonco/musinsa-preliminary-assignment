@@ -18,7 +18,7 @@ export function InterviewConfirmButtion({
 }) {
 	const queryClient = useQueryClient();
 
-	const { mutate, isPending } = useMutation({
+	const { mutate, isPending, isSuccess } = useMutation({
 		mutationFn: confirmInterview,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: ["interview", interviewId] });
@@ -37,24 +37,24 @@ export function InterviewConfirmButtion({
 		});
 	}
 
-	console.log(confirmed, !confirmed, !!confirmed);
+	const isConfirmed = !!confirmed?.date;
 
 	return (
 		<Button
 			onClick={handleConfirm}
-			disabled={confirmed !== null || !clickedSlot}
+			disabled={isConfirmed || !clickedSlot}
 			className={cn(
 				"block px-8 bg-black hover:opacity-70 text-white text-lg py-3 rounded-lg cursor-pointer",
-				(confirmed !== null || !clickedSlot) &&
+				(isConfirmed || !clickedSlot) &&
 					"opacity-20 cursor-default hover:opacity-20",
 			)}
 		>
-			{confirmed ? (
-				"면접 확정"
+			{isConfirmed || isSuccess ? (
+				"확정된 면접"
 			) : isPending ? (
 				<LucideLoaderCircle className="size-4 animate-spin" />
 			) : (
-				"면접 확정"
+				<p className="text-sm">면접 확정하기</p>
 			)}
 		</Button>
 	);
