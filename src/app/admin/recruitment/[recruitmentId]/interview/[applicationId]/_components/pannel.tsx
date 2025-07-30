@@ -1,51 +1,17 @@
 "use client";
 
-import { addDays, format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { addDays } from "date-fns";
+import { useState } from "react";
+import { fetchCalendarEvents } from "@/lib/query";
 import type { UnavailableTime } from "@/lib/types";
-import { weekEndDate, weekStartDate } from "@/lib/utils";
+import {
+	type GoogleEvent,
+	transformEventsToUnavailableTimes,
+	weekEndDate,
+	weekStartDate,
+} from "@/lib/utils";
 import { Sidebar, WeekTimePicker } from "./index";
-
-type GoogleEvent = {
-	summary: string;
-	start: { dateTime: string; date?: null };
-	end: { dateTime: string; date?: null };
-};
-
-const transformEventsToUnavailableTimes = (
-	events: GoogleEvent[],
-): UnavailableTime[] => {
-	const blockedSlots: UnavailableTime[] = [];
-
-	for (const event of events) {
-		// 하루 종일 일정은 특정 시간 슬롯을 막지 않으므로 건너뜁니다.
-		if (event.start.date) {
-			continue;
-		}
-
-		const startDate = new Date(event.start.dateTime);
-		const endDate = new Date(event.end.dateTime);
-
-		// 이벤트 시작 시간부터 끝 시간까지 1시간 단위로 순회하며
-		// 이벤트가 차지하는 모든 시간 슬롯을 blockedSlots 배열에 추가합니다.
-		let currentHour = new Date(startDate);
-		while (currentHour < endDate) {
-			blockedSlots.push({
-				date: format(currentHour, "yyyy-MM-dd"),
-				hour: currentHour.getHours(),
-			});
-			// 다음 시간으로 이동
-			currentHour.setHours(currentHour.getHours() + 1);
-		}
-	}
-
-	// 중복된 슬롯을 제거 (예: 2개의 이벤트가 같은 시간 슬롯에 있을 경우)
-	const uniqueSlots = Array.from(
-		new Set(blockedSlots.map((slot) => JSON.stringify(slot))),
-	).map((str) => JSON.parse(str));
-
-	return uniqueSlots;
-};
 
 export function Pannel({
 	recruitmentId,
@@ -54,11 +20,7 @@ export function Pannel({
 	recruitmentId: string;
 	applicationId: string;
 }) {
-	const [isLoading, setIsLoading] = useState<boolean>();
 	const [baseDate, setBaseDate] = useState<Date>(new Date());
-	const [unavailableTimes, setUnavailableTimes] = useState<UnavailableTime[]>(
-		[],
-	);
 	const weekStart = weekStartDate(baseDate);
 	const weekEnd = weekEndDate(baseDate);
 
@@ -70,37 +32,16 @@ export function Pannel({
 		setBaseDate(addDays(baseDate, -7));
 	}
 
-	useEffect(() => {
-		const fetchEvents = async () => {
-			setIsLoading(true); // 로딩 시작
-			try {
-				const params = new URLSearchParams({
-					timeMin: weekStart.toISOString(),
-					timeMax: weekEnd.toISOString(),
-				});
-				const res = await fetch(`/api/calendar-events?${params}`);
-
-				if (res.status === 401) {
-					console.log("로그인이 필요합니다.");
-					setUnavailableTimes([]);
-					return;
-				}
-
-				if (res.ok) {
-					const data = await res.json();
-					setUnavailableTimes(transformEventsToUnavailableTimes(data));
-				} else {
-					console.error("Failed to fetch events");
-				}
-			} catch (error) {
-				console.error("An error occurred:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchEvents();
-	}, [baseDate]);
+	const { data, isLoading, isError } = useQuery<
+		GoogleEvent[],
+		Error,
+		UnavailableTime[]
+	>({
+		queryKey: ["calendarEvents", baseDate.toISOString()],
+		queryFn: () =>
+			fetchCalendarEvents(weekStart.toISOString(), weekEnd.toISOString()),
+		select: (data) => transformEventsToUnavailableTimes(data),
+	});
 
 	return (
 		<>
@@ -109,19 +50,15 @@ export function Pannel({
 				end_date={weekEnd}
 				nextWeek={nextWeek}
 				prevWeek={prevWeek}
-				unavailable_times={unavailableTimes}
+				unavailable_times={data}
 				recruitment_id={recruitmentId}
 				application_id={applicationId}
 			/>
 			<div className="flex-1 flex flex-col min-h-0">
-				<GoolgeLoginButton />
-				{isLoading ? (
-					<div>캘린더 일정을 불러오는 중입니다...</div>
-				) : (
-					<WeekTimePicker
-						weekStart={weekStart}
-						unavailableTimes={unavailableTimes}
-					/>
+				{isError && <GoolgeLoginButton />}
+				{isLoading && <div>캘린더 일정을 불러오는 중입니다...</div>}
+				{!isLoading && !isError && (
+					<WeekTimePicker weekStart={weekStart} unavailableTimes={data} />
 				)}
 			</div>
 		</>

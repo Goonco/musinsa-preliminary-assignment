@@ -5,6 +5,7 @@ import {
 	LucideBook,
 	LucideBriefcase,
 	LucideContact,
+	LucideMessageCircle,
 	LucideRotateCw,
 	LucideShapes,
 } from "lucide-react";
@@ -62,6 +63,16 @@ export default function Page() {
 						Notion 보러가기
 					</a>
 
+					<a
+						className="py-2 w-full flex flex-row text-xs items-center justify-center gap-1.5 bg-blue-500 shadow-sm font-semibold text-white rounded cursor-pointer hover:opacity-50 disabled:bg-gray-400 disabled:cursor-default"
+						href={process.env.NEXT_PUBLIC_SLACK_INVITE}
+						target="_blank"
+						rel="noreferrer"
+					>
+						<LucideMessageCircle className="size-4" />
+						Slack 초대코드
+					</a>
+
 					<Button
 						onClick={() => {
 							if (window.confirm("모든 데이터를 초기화합니다."))
@@ -91,7 +102,6 @@ export default function Page() {
 						<LucideShapes className="size-4" />
 						대시보드 보러가기
 					</Link>
-					<p>슬랙 초대코드.</p>
 				</div>
 			</div>
 		</div>

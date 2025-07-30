@@ -20,7 +20,7 @@ export function Sidebar({
 
 	recruitment_id,
 	application_id,
-	unavailable_times,
+	unavailable_times = [],
 }: {
 	start_date: Date;
 	end_date: Date;
@@ -29,7 +29,7 @@ export function Sidebar({
 
 	recruitment_id: string;
 	application_id: string;
-	unavailable_times: UnavailableTime[];
+	unavailable_times?: UnavailableTime[];
 }) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const {
