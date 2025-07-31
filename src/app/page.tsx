@@ -65,7 +65,7 @@ export default function Page() {
 
 					<a
 						className="py-2 w-full flex flex-row text-xs items-center justify-center gap-1.5 bg-blue-500 shadow-sm font-semibold text-white rounded cursor-pointer hover:opacity-50 disabled:bg-gray-400 disabled:cursor-default"
-						href={process.env.NEXT_PUBLIC_SLACK_INVITE}
+						href="https://join.slack.com/t/musinsa-goonco/shared_invite/zt-3aavqc94j-v08w7qwRYGlB2uS1x57Aqw"
 						target="_blank"
 						rel="noreferrer"
 					>
