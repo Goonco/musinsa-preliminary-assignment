@@ -62,8 +62,10 @@ export function ApplyForm({ recruitmentId }: { recruitmentId: string }) {
 				method: "POST",
 				body: formData,
 			});
+			alert("제출이 완료되었습니다.");
 		} catch (error) {
 			console.log(error);
+			alert("알 수 없는 이유로 실패하였습니다.");
 		} finally {
 			setLoading(false);
 		}

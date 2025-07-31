@@ -45,6 +45,12 @@ export function Sidebar({
 
 	const { mutate, isPending } = useMutation({
 		mutationFn: createInterview,
+		onSuccess: () => {
+			alert("면접이 생성되었습니다.");
+		},
+		onError: () => {
+			alert("알수없는 이유로 실패하였습니다.");
+		},
 	});
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
